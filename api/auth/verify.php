@@ -32,7 +32,7 @@ if (!$payload || $payload['exp'] < time()) {
 }
 
 try {
-    $query = "SELECT u.id, u.name, u.email, u.role, u.is_active, d.name as department_name 
+    $query = "SELECT u.id, u.name, u.email, u.role, u.is_active, u.department_id, d.name as department_name 
               FROM users u 
               LEFT JOIN departments d ON u.department_id = d.id 
               WHERE u.id = :user_id";

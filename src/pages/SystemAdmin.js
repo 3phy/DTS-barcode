@@ -20,7 +20,6 @@ import { useAuth } from '../contexts/AuthContext';
 import SystemSettings from '../components/SystemSettings';
 import DatabaseManagement from '../components/DatabaseManagement';
 import UserActivity from '../components/UserActivity';
-import SystemLogs from '../components/SystemLogs';
 
 const SystemAdmin = () => {
   const { user } = useAuth();
@@ -42,7 +41,6 @@ const SystemAdmin = () => {
     { label: 'System Settings', icon: <SettingsIcon />, component: <SystemSettings /> },
     { label: 'Database Management', icon: <DatabaseIcon />, component: <DatabaseManagement /> },
     { label: 'User Activity', icon: <UsersIcon />, component: <UserActivity /> },
-    { label: 'System Logs', icon: <LogsIcon />, component: <SystemLogs /> },
   ];
 
   return (

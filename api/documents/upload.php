@@ -126,21 +126,24 @@ if (move_uploaded_file($file['tmp_name'], $file_path)) {
                 
                 $intermediate_department_id = $preference ? $preference['intermediate_dept_id'] : null;
                 
-                // Create the routing rule
-                $create_routing_query = "INSERT INTO document_routing (from_department_id, to_department_id, intermediate_department_id) 
-                                       VALUES (:from_dept, :to_dept, :intermediate_dept)";
-                $create_routing_stmt = $db->prepare($create_routing_query);
-                $create_routing_stmt->bindParam(':from_dept', $current_department_id);
-                $create_routing_stmt->bindParam(':to_dept', $department_id);
-                $create_routing_stmt->bindParam(':intermediate_dept', $intermediate_department_id);
-                $create_routing_stmt->execute();
-                
-                // Set the routing rule for use below
-                $routing_rule = ['intermediate_department_id' => $intermediate_department_id];
+                // Only create routing rule if there's an intermediate department (3+ departments in path)
+                if ($intermediate_department_id) {
+                    $create_routing_query = "INSERT INTO document_routing (from_department_id, to_department_id, intermediate_department_id) 
+                                           VALUES (:from_dept, :to_dept, :intermediate_dept)";
+                    $create_routing_stmt = $db->prepare($create_routing_query);
+                    $create_routing_stmt->bindParam(':from_dept', $current_department_id);
+                    $create_routing_stmt->bindParam(':to_dept', $department_id);
+                    $create_routing_stmt->bindParam(':intermediate_dept', $intermediate_department_id);
+                    $create_routing_stmt->execute();
+                    
+                    // Set the routing rule for use below
+                    $routing_rule = ['intermediate_department_id' => $intermediate_department_id];
+                }
+                // For direct routes (2 departments), no routing rule is created
             }
         }
         
-        // Keep documents as "outgoing" - they stay in the sender's department until manually sent
+        // Documents start as "outgoing" in sender's department - ready to be received
         $initial_status = 'outgoing';
         $initial_current_department = $current_department_id; // Keep in sender's department
         
